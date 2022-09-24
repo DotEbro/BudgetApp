@@ -4,7 +4,7 @@ import 'package:money_converter/Currency.dart';
 import 'package:money_converter/money_converter.dart';
 class SavingSMS{
   final DataBase _db = DataBase();
-  Future<void> savedSMS(String name, String sms) async {
+  Future<void> savedSMS(String name, String sms, String userCurrency) async {
     // String sms = "Your account HBL A/C 0128*****40103 has been debited with PKR 20,000.00 from STARBUCKS on 14/06/2022 13:39:49 for ATM Cash Withdrawal. Remaining balance is PKR 119,950.38.";
 
     // String sms = "Your account HBL A/C 0128*****40103 has been credited with PKR 20,000.00 from STARBUCKS on 14/06/2022 13:39:49 for Salary. Remaining balance is PKR 119,950.38.";
@@ -128,6 +128,17 @@ class SavingSMS{
       debited = "-${sms.substring(startDIndex + length, endDIndex)}";
       debited = debited.replaceAll(',', '');
 
+      if(!(sms.toLowerCase().contains(userCurrency))){
+        int spaceIndex = debited.indexOf(" ");
+        String smsCurrency = debited.substring(1, spaceIndex);
+        double currencyAmount = double.parse(debited.substring(spaceIndex, debited.length));
+
+        var usdConvert = await MoneyConverter.convert(
+            Currency(smsCurrency, amount: currencyAmount),
+            Currency(userCurrency));
+        debited = "-$userCurrency ${usdConvert!.toStringAsFixed(2)}";
+      }
+
     } else if (sms.toLowerCase().contains("credited")) {
       int length = 0;
       int endCIndex = 0;
@@ -156,6 +167,17 @@ class SavingSMS{
       credited = "+${sms.substring(startCIndex + length, endCIndex)}";
       credited = credited.replaceAll(',', '');
 
+      if(!(sms.toLowerCase().contains(userCurrency))){
+        int spaceIndex = debited.indexOf(" ");
+        String smsCurrency = credited.substring(1, spaceIndex);
+        double currencyAmount = double.parse(credited.substring(spaceIndex, credited.length));
+
+        var usdConvert = await MoneyConverter.convert(
+            Currency(smsCurrency, amount: currencyAmount),
+            Currency(userCurrency));
+        credited = "+$userCurrency ${usdConvert!.toStringAsFixed(2)}";
+      }
+
     } else if (sms.toLowerCase().contains("purchased")) {
       int endPIndex = 0;
       int startPIndex = sms.toLowerCase().indexOf(purchaseStart);
@@ -165,10 +187,16 @@ class SavingSMS{
       debited = "-${sms.substring(startPIndex + purchaseStart.length, endPIndex)}";
       debited = debited.replaceAll(',', '');
 
-      // debited = debited.replaceAll(RegExp('[^0-9]'), '');
-      //
-      // var usdConvert = await MoneyConverter.convert(Currency(Currency.USD, amount: double.parse(debited)), Currency(Currency.KWD));
-      // debited = usdConvert.toString();
+      if(!(sms.toLowerCase().contains(userCurrency))){
+        int spaceIndex = debited.indexOf(" ");
+        String smsCurrency = debited.substring(1, spaceIndex);
+        double currencyAmount = double.parse(debited.substring(spaceIndex, debited.length));
+
+        var usdConvert = await MoneyConverter.convert(
+            Currency(smsCurrency, amount: currencyAmount),
+            Currency(userCurrency));
+        debited = "-$userCurrency ${usdConvert!.toStringAsFixed(2)}";
+      }
     }
 
     int startRIndex = sms.toLowerCase().indexOf(placeStart);
@@ -185,10 +213,10 @@ class SavingSMS{
     bank = sms.substring(startAIndex + bankStart.length, endAIndex);
 
     if (sms.contains("Talabat")){
-      category = "Talabat";
+      category = "Restaurants/Ordering";
     }
     if (sms.contains("Deliveroo")){
-      category = "Deliveroo";
+      category = "Restaurants/Ordering";
     }
 
     for (int i = 0; i < 3; i++) {

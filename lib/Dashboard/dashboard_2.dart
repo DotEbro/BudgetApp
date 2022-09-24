@@ -98,7 +98,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void onData(NotificationEvent event) {
     print("onData msg: ${event.text}");
-    SavingSMS().savedSMS(widget.userData.userID, event.text!);
+    SavingSMS().savedSMS(widget.userData.userID, event.text!, widget.userData.currency);
   }
 
   Future<void> initPlatformState() async {
@@ -183,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           sms = event;
           print(sms);
           setState(() {
-            SavingSMS().savedSMS(widget.userData.userID, sms);
+            SavingSMS().savedSMS(widget.userData.userID, sms, widget.userData.currency);
           });
         });
       }
@@ -281,7 +281,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         height: 12,
                       ),
                       Text(
-                        "KWD $Current_amount",
+                        "${widget.userData.currency} $Current_amount",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 32,
@@ -299,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         height: 8,
                       ),
                       Text(
-                        "KWD $currentMonAmount",
+                        "${widget.userData.currency} $currentMonAmount",
                         style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: "Righteous"),
                       ),
                     ],
