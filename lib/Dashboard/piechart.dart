@@ -194,7 +194,7 @@ class _PieChartScreenState extends State<PieChartScreen> {
                     colorList: colorList,
                     chartType: ChartType.ring,
                     chartRadius: MediaQuery.of(context).size.width / 1.9,
-                    centerText: "KWD $Amount_current \nTotal Expenses 2022".tr,
+                    centerText: "${widget.userData.currency} $Amount_current \nTotal Expenses 2022".tr,
                     ringStrokeWidth: MediaQuery.of(context).size.width * 0.09,
                     animationDuration: const Duration(seconds: 1),
                     chartValuesOptions: const ChartValuesOptions(

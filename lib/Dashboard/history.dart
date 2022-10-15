@@ -86,7 +86,7 @@ class _HistoryState extends State<History> {
                   title: ChartTitle(text: "m_e_a".tr,),
                   tooltipBehavior: _tooltipBehavior,
                   primaryXAxis: NumericAxis(edgeLabelPlacement: EdgeLabelPlacement.shift),
-                  primaryYAxis: NumericAxis(labelFormat: "{value}\n KWD"),
+                  primaryYAxis: NumericAxis(labelFormat: "{value}\n ${widget.userData.currency}"),
                   series: <LineSeries>[
                     LineSeries<SalesData, int>(
                       dataSource: chartData,
